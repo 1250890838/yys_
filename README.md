@@ -4,6 +4,8 @@
 
 过程中可以如果有协同可以选择接受或拒绝（默认接受）
 
+可以选择次数
+
 ![realme](https://user-images.githubusercontent.com/57135698/144731480-ec312ed8-b742-4ed5-b0ab-8149f4d927aa.PNG)
 
 2021/12/5
