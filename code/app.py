@@ -1,8 +1,4 @@
 import tkinter as tk
-from win32con import *
-import win32api,win32gui
-from mycode import cap
-from mycode import tttt
 from functools import partial
 import cv2.cv2 as cv
 import numpy
@@ -10,156 +6,14 @@ import time
 import threading
 import aircv as ac
 from mycode.settings import *
+from mycode import tools
 from tkinter.font import Font
 from tkinter import ttk
-class Jxthread(threading.Thread):
-    def __init__(self,content,chose1,chose2,chose3,frequency):
-        self.content=content
-        self.chose1=chose1
-        self.chose2=chose2
-        self.chose3=chose3
-        self.frequency=frequency
-        threading.Thread.__init__(self)
-    def run(self):
-        play(self.content,self.chose1,self.chose2,self.chose3,self.frequency)
-class InvateThread(threading.Thread):
-    def __init__(self):
-        pass
-        threading.Thread.__init__(self)
-    def run(self):
-        main_thread_exist=True
-        invate()
-def invate():
-    hwnd=cap.get_window_pos_clear(yys_name)
-    while main_thread_exist:
-        tttt.if_exist_lclick(hwnd,invate_chose,0.8)
-        time.sleep(2)
-def yyscheck_and_retimg():
-    img=cap.fetch_image()
-    if img==NOTFOUND:
-        return NOTFOUND
-    else:
-        return img
-def jxmatch(content,type):
-    img=yyscheck_and_retimg()
-    if img==NOTFOUND:
-        return NOTFOUND
-    sim = cap.howdiffer(cap.pHash(img), cap.pHash(type))
-    if(int(sim)<=5):
-        return 0
-    else:
-        content.insert(tk.END,"单人觉醒启动失败\n")
-        return INCON
-
-def jxsmatch(a):
-    im1 = cap.fetch_image()
-    if im1==NOTFOUND:
-        a.insert(tk.END,"未检测到阴阳师!\n")
-        return NOTFOUND
-    if(int(cap.howdiffer(cap.pHash(im1), cap.pHash(zd_backsq)))<=10):
-        a.insert(tk.END,"组队模式启动成功\n")
-        return 0
-    else:
-        a.insert(tk.END,"组队模式启动失败\n")
-        return INCON
-    return 0
-def yhmatch(content,type):
-    img = yyscheck_and_retimg()
-    if img == NOTFOUND:
-        return NOTFOUND
-    sim = cap.howdiffer(cap.pHash(img), cap.pHash(type))
-    if (int(sim) <= 5):
-        return 0
-    else:
-        content.insert(tk.END, "单人御魂启动失败\n")
-        return INCON
-def yyhmatch(a):
-    im1 = cap.fetch_image()
-    if im1 == NOTFOUND:
-        a.insert(tk.END, "未检测到阴阳师!\n")
-        return NOTFOUND
-    sim = cap.howdiffer(cap.pHash(im1), cap.pHash(yyh_back))
-    if (int(sim) <=5):
-        a.insert(tk.END, "业原火启动成功\n")
-    else:
-        a.insert(tk.END, "业原火启动失败\n")
-        return INCON
-def play(content,chose_mode,chose_siji,chose_dashou,frequency): #主要的函数
-    global main_thread_exist
-    frequency=int(frequency.get())
-    try:
-        hwnd = cap.get_window_pos_clear("阴阳师-网易游戏")
-    except:
-        content.insert(tk.END,"没有找到阴阳师窗口\n")
-        main_thread_exist=False
-        return
-    if(chose_mode.get()=="单人觉醒"):
-        tttt.juexing_one(hwnd,content,chose_siji,frequency)
-    elif chose_mode.get()=="组队觉醒/御魂/魂土(司机)":
-        tttt.juexing_two(hwnd, content, chose_siji, chose_dashou,frequency)
-    elif chose_mode.get()=="单人御魂1~10":
-        tttt.yuhun_one(hwnd,content,frequency)
-    elif chose_mode.get()=="业原火":
-        tttt.yyh_one(hwnd,content,frequency)
-    elif chose_mode.get()=="组队觉醒/御魂/魂土(打手)":
-        tttt.zd_dashou(hwnd,content,chose_siji,chose_dashou,frequency)
-    main_thread_exist=False
-
-
-
-def testi(): #测试用
-    #cap.get_window_pos("阴阳师-网易游戏")
-    #src = cap.fetch_image()
-    #src.save(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\abce.PNG")
-    #print(cap.howdiffer(cap.pHash(src), cap.pHash(jx_backh)))
-    #hwnd=cap.get_window_pos_clear(yys_name)
-    src=tttt.fetch_image_and_convert()
-    search=cv.imread(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\jxbegin.PNG")
-    pos=ac.find_template(src,search,0.5)
-    """
-    if pos==None:
-        print("没找到！")
-    else:
-        print(pos["result"])
-        tttt.left_click(hwnd,pos)
-    #    ifstop=True
-    #print(id(ifstop))
-    #return
-    #src = cap.fetch_image()
-    #print(cap.howdiffer(cap.pHash(src), cap.pHash(jx_back)))
-    #im1 = cap.fetch_image()
-    #im1.save(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\jx_backl.PNG")
-
-    """
-    """
-    hwnd=cap.get_window_pos_clear(yysname)
-    lparam = win32api.MAKELONG(487,455)
-    win32gui.PostMessage(hwnd, WM_LBUTTONDOWN, None, lparam);
-    win32gui.PostMessage(hwnd, WM_LBUTTONUP, None, lparam);
-    """
-def change_relation(cmb1,cmb2,cmb3): #combobox select操作触发的回调函数
-    cmb1_text=cmb1.get()
-    if cmb1_text=="组队觉醒/御魂/魂土(司机)" or cmb1_text=="组队觉醒/御魂/魂土(打手)" :
-        cmb2["value"]=yys_choose #settings.py
-        cmb3["value"]=yys_choose
-        cmb2.set(yys_choose[0])
-        cmb3.set(yys_choose[0])
-    elif cmb1_text=="单人觉醒":
-        cmb2["value"]=ql_type
-        cmb3["value"] = ()
-        cmb2.set(ql_type[0])
-        cmb3.set("")
-    else:
-        cmb2["value"]=()
-        cmb3["value"]=()
-        cmb2.set("")
-        cmb3.set("")
-def selection(radio):
-    global invate_chose
-    if(radio.get()=="yes"):
-        invate_chose=invate_yes
-    else:
-        invate_chose=invate_no
+from mycode.zuduisiji import zudui_siji
+from mycode.juexingone import juexing_one
+from mycode.yuhunone import yuhun_one
+from mycode.yeyuanhuo import yyh_one
+from mycode.zuduidashou import zudui_dashou
 class Application(tk.Tk):
     def __init__(self,title, master=None):
         tk.Tk.__init__(self,master)
@@ -200,11 +54,86 @@ class Application(tk.Tk):
             b = tk.Radiobutton(self.ofr, text=text,
                             variable=v, value=mode,command=partial(selection,v))
             b.pack(anchor="w")
-def launch(content,choose1,choose2,choose3,frequency):
+
+def launch(content,choose1,choose2,choose3,frequency): #启动线程，开刷
     jxthread=Jxthread(content,choose1,choose2,choose3,frequency)
     jxthread.setDaemon(True)
     jxthread.start()
     invatethread=InvateThread()
     invatethread.setDaemon(True)
     invatethread.start()
+
+class Jxthread(threading.Thread): #主线程，调用play函数
+    def __init__(self,content,chose1,chose2,chose3,frequency):
+        self.content=content
+        self.chose1=chose1
+        self.chose2=chose2
+        self.chose3=chose3
+        self.frequency=frequency
+        threading.Thread.__init__(self)
+    def run(self):
+        play(self.content,self.chose1,self.chose2,self.chose3,self.frequency)
+
+def play(content,chose_mode,chose_siji,chose_dashou,frequency): #
+    global main_thread_exist
+    frequency=int(frequency.get())
+    hwnd = tools.get_hwnd(yys_name)
+    if hwnd==None:
+        content.insert(tk.END,"没有找到阴阳师窗口\n")
+        main_thread_exist=False
+    if(chose_mode.get()=="单人觉醒"):
+        juexing_one(hwnd,content,chose_siji,frequency)
+    elif chose_mode.get()=="组队觉醒/御魂/魂土(司机)":
+        zudui_siji(hwnd, content, chose_siji, chose_dashou,frequency)
+    elif chose_mode.get()=="单人御魂1~10":
+        yuhun_one(hwnd,content,frequency)
+    elif chose_mode.get()=="业原火":
+        yyh_one(hwnd,content,frequency)
+    elif chose_mode.get()=="组队觉醒/御魂/魂土(打手)":
+        zudui_siji(hwnd,content,chose_siji,chose_dashou,frequency)
+    main_thread_exist=False
+
+class InvateThread(threading.Thread): #查看是否有协同邀请任务的线程
+    def __init__(self):
+        pass
+        threading.Thread.__init__(self)
+    def run(self):
+        main_thread_exist=True
+        wait_invate()
+def wait_invate():
+    hwnd=tools.get_hwnd(yys_name)
+    while main_thread_exist:
+        tools.if_exist_lclick(hwnd,invate_chose,0.8)
+        time.sleep(2)
+def testi(): #测试用
+    src=tools.fetch_image()
+    search=cv.imread(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\jxbegin.PNG")
+    pos=ac.find_template(src,search,0.5)
+
+def change_relation(cmb1,cmb2,cmb3): #combobox select操作触发的回调函数
+    cmb1_text=cmb1.get()
+    if cmb1_text=="组队觉醒/御魂/魂土(司机)" or cmb1_text=="组队觉醒/御魂/魂土(打手)" :
+        cmb2["value"]=yys_choose #settings.py
+        cmb3["value"]=yys_choose
+        cmb2.set(yys_choose[0])
+        cmb3.set(yys_choose[0])
+    elif cmb1_text=="单人觉醒":
+        cmb2["value"]=ql_type
+        cmb3["value"] = ()
+        cmb2.set(ql_type[0])
+        cmb3.set("")
+    else:
+        cmb2["value"]=()
+        cmb3["value"]=()
+        cmb2.set("")
+        cmb3.set("")
+
+def selection(radio):
+    global invate_chose
+    if(radio.get()=="yes"):
+        invate_chose=invate_yes
+    else:
+        invate_chose=invate_no
+
+
 

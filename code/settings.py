@@ -1,9 +1,17 @@
+import numpy
 import cv2.cv2 as cv
+import tkinter as tk
+import win32gui,win32api
+from win32con import *
+from mycode.settings import *
+from mycode import app
+import aircv as ac
+import time
 #主线程是否还活着
 main_thread_exist=True
 #是否停止
 ifstop=False
-#选择
+#选项
 yys_choose=("晴明","神乐")
 ql_type=("火","风","水","雷")
 #名字
@@ -18,12 +26,6 @@ jx_backf=cv.imread(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\im
 jx_backs=cv.imread(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\jx_backs.PNG")
 jx_backl=cv.imread(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\jx_backl.PNG")
 jx_bg = cv.imread(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\jxbegin.PNG") #单人觉醒挑战按钮
-"""
-HQL=1 #火麒麟
-FQL=2 #风麒麟
-SQL=3 #水麒麟
-LQL=4 #雷麒麟
-"""
 #组队
 invate_yes=cv.imread(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\invate_yes.PNG")
 invate_no=cv.imread(r"D:\PyCharm Community Edition 2021.1.1\pythonProject\venv\image\invate_no.PNG")
