@@ -8,7 +8,7 @@ def zudui_siji(hwnd,content,chose_siji,chose_dashou,strict): #组队司机模式
     backgroundone=ret[0]
     backgroundtwo=ret[1]
     first = True
-    match(content,backgroundone)
+    state=match(content,backgroundone)
     state=recognize_state(state,content)
     if state == YERROR:
         return
@@ -29,8 +29,8 @@ def zudui_siji(hwnd,content,chose_siji,chose_dashou,strict): #组队司机模式
                     while True:
                         src=fetch_image()
                         pos = ac.find_template(src, zd_first, 0.6)
-                        yes = cap.howdiffer(src,backgroundone) <= 5 \
-                                or cap.howdiffer(src, backgroundtwo) <= 5
+                        yes = howdiffer(src,backgroundone) <= 5 \
+                                or howdiffer(src, backgroundtwo) <= 5
                         if pos == None and yes == False:
                             left_click(hwnd,pos_over,False)
                         elif pos:
